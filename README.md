@@ -1,0 +1,2 @@
+# SzamitogepesGrafika
+ Szamitogepes grafika Sapientia
