@@ -35,6 +35,16 @@ void display(void) {
     glColor3f(0.0, 0.0, 1.0);                         // kék szín
     glVertex2i(-30, -10);                             // és még egy pont
     glEnd();
+
+    glPushMatrix();
+    glBegin(GL_TRIANGLES);
+    glColor3f(1.0, 0.0, 0.0);
+    glRotatef(spin * 3, 0.0, 0.0, 1.0);
+    glVertex2i(10, 1);
+    glVertex2i(9, 14);
+    glVertex2i(-5, -5);
+    glEnd();
+
     glPopMatrix();                                         // puffer-csere
     glutSwapBuffers();
     glFlush();                                             // rajzolj!
@@ -62,7 +72,7 @@ void mouse(int button, int state, int x, int y) {
             if (state == GLUT_DOWN)
                 glutIdleFunc(spinDisplay);
             if (state == GLUT_UP)
-                glutIdleFunc(NULL);
+                glutIdleFunc(nullptr);
             break;
         default:
             break;
@@ -85,7 +95,7 @@ void reshape(int w, int h) {
 
 int main(int argc, char **argv) {
     glutInit(&argc, argv);                       // inicializáljuk a glut-ot
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB); // az ablak kétszeresen pufferelt,és RGB módú
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB); // az ablak kétszeresen pufferelt,és RGB módú
     glutInitWindowSize(700, 600);                // az ablak 700x600-as
     glutInitWindowPosition(100, 100);            // az ablak bal felsõ sarkank koordinátája
     glutCreateWindow("Pontok");                  // neve Pontok
