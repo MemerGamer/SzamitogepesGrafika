@@ -1,16 +1,43 @@
-/*
-   Rajzoljunk: 
-      -egy piros pontot a (10, 15), 
-      -egy zöld pontot az (50, 10) és
-      -egy kék pontot a (-30, -10) koordinátákra!
+/**
+<h1> Definíciók: </h1>
+- Eltolás: glTranslatef(a, b, c);
+    x' = x + a
+    y' = y + b
+    z' = z + c
+- Skálázás: glScalef(a, b, c);
+    x' = a * x
+    y' = b * y
+    z' = c * z
+- a, b, c > 1: nagyítás
+- 0 < a, b, c < 1: kicsinyítés
+- a, b, c < 0: tükrözés
+- a =/= b =/= c: torzítás
 
-   A színtér forogjon!
+- Forgatás: glRotatef(szög, x, y, z);
+    szög: fokban megadott szög 0 és 360 között
+    x' = x * cos(szög) - y * sin(szög)
+    y' = x * sin(szög) + y * cos(szög)
+    z' = z
 
-   (Az ablak legyen 700*600-as méretû.)
-*/
+A transzformációkat a rendszer mindig az origó körül forgatja el.
+
+Lépések:
+1. origó eltolása a forgatási középpontba
+2. forgatás - glRotatef(45, 0, 0, 1);
+3. origó visszatolása a kiinduló helyére
 
 
-#include <stdlib.h>
+<h1> Feladat: </h2>
+- rajzoljunk ki 20 db negyzetet
+- 1 negyzet, kovetkezo kicsinyites, forgatas 45 fokkal
+    - szineket is valtoztassuk
+    - gl_quads
+- használjuk a glRotatef(), scalef(), translatef() függvényeket
+**/
+
+
+#include <cstdlib>
+#include <valarray>
 #include "glut.h"
 
 
@@ -23,18 +50,41 @@ void init(void) {
 
 void display(void) {
     glClear(GL_COLOR_BUFFER_BIT);             //töröljük a képernyõt
+
     glPushMatrix();
-    glEnable(GL_POINT_SMOOTH);
     glRotatef(spin, 0.0, 0.0, 1.0);
-    glPointSize(15);
-    glBegin(GL_POINTS);                                    // pontokat fogunk specifikálni
-    glColor3f(1.0, 0.0, 0.0);                         // piros szín
-    glVertex2i(10, 15);                               // egy pont a (10, 15) koordinátába
-    glColor3f(0.0, 1.0, 0.0);                         // zöld szín
-    glVertex2i(50, 10);                               // még egy pont
-    glColor3f(0.0, 0.0, 1.0);                         // kék szín
-    glVertex2i(-30, -10);                             // és még egy pont
-    glEnd();
+
+    // Kezdeti értékek
+    float size = 50.0;
+    float r = 0.0;
+    float g = 0.0;
+    float b = 0.0;
+
+    // Ki kell rajzolnunk 20 db negyzetet egymástól eltérõ szín árnyalatokkal, kicsinyítve, forgatva
+    for (int i = 0; i < 20; ++i) {
+        glBegin(GL_QUADS);
+        glColor3f(r, g, b);
+
+        // Negyzet kirajzolása
+        glVertex2f(-size, -size);
+        glVertex2f(-size, size);
+        glVertex2f(size, size);
+        glVertex2f(size, -size);
+        glEnd();
+
+        glTranslatef(0.0, 0.15*i*size, 0.0);
+        glRotatef(45.0, 0.0, 0.0, 1.0);
+        glScalef(0.85, 0.85, 0.0);
+
+
+        // Kicsinyítés
+        size *= 0.99;
+//        r += 0.05;
+        g += 0.05;
+        b += 0.05;
+    }
+
+
     glPopMatrix();                                         // puffer-csere
     glutSwapBuffers();
     glFlush();                                             // rajzolj!
