@@ -55,33 +55,37 @@ void display(void) {
     glRotatef(spin, 0.0, 0.0, 1.0);
 
     // Kezdeti értékek
-    float size = 50.0;
+    float size = 30.0;
     float r = 0.0;
     float g = 0.0;
     float b = 0.0;
+    int n = 20;
+    n = 12; // 12 db negyzetet rajzolunk ki
 
     // Ki kell rajzolnunk 20 db negyzetet egymástól eltérõ szín árnyalatokkal, kicsinyítve, forgatva
-    for (int i = 0; i < 20; ++i) {
-        glBegin(GL_QUADS);
+    for (int i = 0; i < n; ++i) {
         glColor3f(r, g, b);
 
         // Negyzet kirajzolása
-        glVertex2f(-size, -size);
-        glVertex2f(-size, size);
-        glVertex2f(size, size);
-        glVertex2f(size, -size);
+        glBegin(GL_QUADS);
+            glVertex2f(-size, -size);
+            glVertex2f(-size, size);
+            glVertex2f(size, size);
+            glVertex2f(size, -size);
         glEnd();
 
-        glTranslatef(0.0, 0.15*i*size, 0.0);
+
+        // Forgatás, eltolás, kicsinyítés
         glRotatef(45.0, 0.0, 0.0, 1.0);
         glScalef(0.85, 0.85, 0.0);
+        glTranslatef(10.0, 10.0, 0.0);
 
 
-        // Kicsinyítés
+        // Kicsinyítés és színváltoztatás
         size *= 0.99;
-//        r += 0.05;
-        g += 0.05;
-        b += 0.05;
+        r += 0.02;
+        g += 0.06;
+        b += 0.095;
     }
 
 
