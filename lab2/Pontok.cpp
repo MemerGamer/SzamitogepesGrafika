@@ -35,20 +35,17 @@ Lépések:
 - használjuk a glRotatef(), scalef(), translatef() függvényeket
 **/
 
-
-#include <cstdlib>
-#include <valarray>
 #include "glut.h"
 
 
 static GLfloat spin = 0.0;
 
-void init(void) {
+void init() {
     glClearColor(0.0, 0.0, 0.0, 0.0);         // a törlõszín a fekete
     glShadeModel(GL_FLAT);
 }
 
-void display(void) {
+void display() {
     glClear(GL_COLOR_BUFFER_BIT);             //töröljük a képernyõt
 
     glPushMatrix();
@@ -96,14 +93,15 @@ void display(void) {
 
 void keyboard(unsigned char key, int x, int y)              // billentûkezelés
 {
-    switch (key) {
-        case 27:                                                // ha escape-et nyomtam
-            exit(0);                                           // lépjen ki a programból
-            break;
-    }
+//    switch (key) {
+//        case 27:                                                // ha escape-et nyomtam
+//            exit(0);                                           // lépjen ki a programból
+//            break;
+//    }
+    if (key == 27) exit(0); // ha escape-et nyomtam, lépjen ki a programból
 }
 
-void spinDisplay(void) {
+void spinDisplay() {
     spin = spin + 0.5;
     if (spin > 360)
         spin = spin - 360;
@@ -111,16 +109,17 @@ void spinDisplay(void) {
 }
 
 void mouse(int button, int state, int x, int y) {
-    switch (button) {
-        case GLUT_LEFT_BUTTON:
-            if (state == GLUT_DOWN)
-                glutIdleFunc(spinDisplay);
-            if (state == GLUT_UP)
-                glutIdleFunc(NULL);
-            break;
-        default:
-            break;
-    }
+//    switch (button) {
+//        case GLUT_LEFT_BUTTON:
+//            if (state == GLUT_DOWN)
+//                glutIdleFunc(spinDisplay);
+//            if (state == GLUT_UP)
+//                glutIdleFunc(NULL);
+//            break;
+//        default:
+//            break;
+//    }
+    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) glutIdleFunc(spinDisplay);
 }
 
 void reshape(int w, int h) {
