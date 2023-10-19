@@ -6,7 +6,28 @@
  * **/
 
 static GLfloat spin = 0.0;
-GLdouble posX, posY, posZ;
+
+bool animate = false;
+float szog = 0.0;
+float elojel = 1.0;
+
+void Timer(int value){
+    szog += 0.5 * elojel;
+    if(szog > 30) elojel = -elojel;
+    if(szog < -30) elojel = -elojel;
+    if(animate) glutTimerFunc(30, Timer, 0);
+    glutPostRedisplay();
+}
+
+void SpecialKeys(int key, int x, int y){
+    if(key == GLUT_KEY_F1){
+        animate = !animate;
+        if(animate) glutTimerFunc(30, Timer, 0);
+    }
+    glutPostRedisplay();
+    glutPostRedisplay();
+}
+
 
 void init() {
     glClearColor(0.0, 0.0, 0.0, 0.0);         // a törlõszín a fekete
@@ -18,13 +39,20 @@ void display() {
     glClear(GL_COLOR_BUFFER_BIT);             //töröljük a képernyõt
     glPushMatrix();
 
-    // Rajzoljunk ki a képernyõre az egér pozíciója alapján
-    float radius = 5;
-    glTranslatef(posX, posY, posZ);
-    glColor3f(1.0, 1.0, 1.0);
-    glutWireSphere(radius, 20, 20);
+    // Apply rotation to the entire pendulum
+    glRotatef(szog, 1, 0, 0);
 
-    //
+    // Draw the pendulum rod
+    glBegin(GL_LINES);
+    glColor3f(1.0, 1.0, 1.0);
+    glVertex3f(0.0, 10.0, 0.0);
+    glVertex3f(0.0, -20.0, 0.0);
+    glEnd();
+
+    // Draw the pendulum bob
+    glTranslatef(0.0, -20.0, 0.0);  // Move to the bob's position
+    glColor3f(1.0, 0.0, 0.0);
+    glutSolidSphere(5.0, 20, 20);  // Draw a red sphere as the bob
 
     glPopMatrix();                                         // puffer-csere
     glutSwapBuffers();
@@ -78,33 +106,12 @@ void reshape(int w, int h) {
     glLoadIdentity();
 }
 
-void GoTo(double x, double y) {
-    GLint viewport[4];
-    GLdouble modelview[16];
-    GLdouble projection[16];
-    GLfloat winX, winY, winZ;
-    glGetDoublev(GL_MODELVIEW_MATRIX, modelview); // lekérjük a modelview mátrixot
-    glGetDoublev(GL_PROJECTION_MATRIX, projection); // lekérjük a projection mátrixot
-    glGetIntegerv(GL_VIEWPORT, viewport); // lekérjük a viewport-ot
-    winX = (float) x;
-    winY = (float) viewport[3] - (float) y;
-    glReadPixels(x, int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
-    gluUnProject(winX, winY, winZ, modelview, projection, viewport, &posX, &posY, &posZ);
-
-}
-
-void MouseMove(int x, int y) {
-    GoTo(x, y);
-    glutPostRedisplay();
-}
-
 int main(int argc, char **argv) {
     glutInit(&argc, argv);                       // inicializáljuk a glut-ot
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB); // az ablak kétszeresen pufferelt,és RGB módú
     glutInitWindowSize(700, 600);                // az ablak 700x600-as
     glutInitWindowPosition(100, 100);            // az ablak bal felsõ sarkank koordinátája
     glutCreateWindow("Vetites");                  // neve Vetites
-    glutPassiveMotionFunc(MouseMove);
     init();                                      // inicializálás
     glutDisplayFunc(display);                    // a képernyõ események kezelése
     glutKeyboardFunc(keyboard);                  // billentyûzet események kezelése
