@@ -3,7 +3,7 @@
 
 static GLfloat spin = 0.0;
 GLdouble posX, posY, posZ;
-double l1 = 20.0; // Length of the first arm
+double l1 = 30.0; // Length of the first arm
 double l2 = 20.0; // Length of the second arm
 double minAngle =  M_PI; // Minimum angle of the second arm, in radians, can be changed to any value between 0 and 180 degrees
 
