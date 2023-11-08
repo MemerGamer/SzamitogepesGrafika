@@ -39,6 +39,12 @@ float C[6][3] = {
 void init() {
     glClearColor(0.0, 0.0, 0.0, 0.0); // Clear color is black
     glShadeModel(GL_FLAT);
+
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_COLOR_MATERIAL);
+    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+
+
 }
 
 void display() {
@@ -63,10 +69,11 @@ void reshape(int w, int h) {
     glViewport(0, 0, (GLsizei) w, (GLsizei) h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
+
     if (w <= h)
-        glOrtho(-2, 2, -2 * (GLfloat) h / (GLfloat) w, 2 * (GLfloat) h / (GLfloat) w, -1.0, 1.0);
+        glOrtho(-2, 2, -2 * (GLfloat) h / (GLfloat) w, 2 * (GLfloat) h / (GLfloat) w, -50.0, 50.0);
     else
-        glOrtho(-2 * (GLfloat) w / (GLfloat) h, 2 * (GLfloat) w / (GLfloat) h, -2, 2, -1.0, 1.0);
+        glOrtho(-2 * (GLfloat) w / (GLfloat) h, 2 * (GLfloat) w / (GLfloat) h, -2, 2, -50.0, 50.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
