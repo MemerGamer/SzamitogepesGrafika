@@ -7,27 +7,26 @@ bool mouseDown = false;
 float rotationX = 0.0;
 float rotationY = 0.0;
 
-// Definition of the vertices of the cube
 int V[8][3] = {
         {-1, -1, 1},
-        {1,  -1, 1},
-        {1,  1,  1},
-        {-1, 1,  1},
+        {1, -1, 1},
+        {1, 1, 1},
+        {-1, 1, 1},
         {-1, -1, -1},
-        {1,  -1, -1},
-        {1,  1,  -1},
-        {-1, 1,  -1}
+        {1, -1, -1},
+        {1, 1, -1},
+        {-1, 1, -1}
 };
 
-// Definition of the faces of the cube
-int F[6][4] = {{2, 3, 0, 1},
-               {2, 1, 5, 6},
-               {6, 5, 4, 7},
-               {7, 4, 0, 3},
-               {3, 2, 6, 7},
-               {0, 4, 5, 1}};
+int F[6][4] = {
+        {2, 3, 0, 1},
+        {2, 1, 5, 6},
+        {6, 5, 4, 7},
+        {7, 4, 0, 3},
+        {3, 2, 6, 7},
+        {0, 4, 5, 1}
+};
 
-// Definition of the colors of the faces of the cube
 float C[6][3] = {
         {1.0, 0.0, 0.0},
         {1.0, 1.0, 0.0},
@@ -46,21 +45,10 @@ void display() {
     glClear(GL_COLOR_BUFFER_BIT);
     glPushMatrix();
 
-    // Apply rotation based on mouse input
     glRotatef(rotationX, 1.0, 0.0, 0.0);
     glRotatef(rotationY, 0.0, 1.0, 0.0);
 
-
-    // Draw your tessellated object here
-    glBegin(GL_QUADS);
-    for (int i = 0; i < 6; ++i) {
-        glColor3f(C[i][0], C[i][1], C[i][2]);
-        for (int j = 0; j < 4; ++j) {
-            int vertexIndex = F[i][j];
-            glVertex3f(V[vertexIndex][0], V[vertexIndex][1], V[vertexIndex][2]);
-        }
-    }
-    glEnd();
+    glCallList(1);
 
     glPopMatrix();
     glutSwapBuffers();
@@ -76,9 +64,9 @@ void reshape(int w, int h) {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     if (w <= h)
-        glOrtho(-50, 50, -50 * (GLfloat) h / (GLfloat) w, 50 * (GLfloat) h / (GLfloat) w, -1.0, 1.0);
+        glOrtho(-2, 2, -2 * (GLfloat) h / (GLfloat) w, 2 * (GLfloat) h / (GLfloat) w, -1.0, 1.0);
     else
-        glOrtho(-50 * (GLfloat) w / (GLfloat) h, 50 * (GLfloat) w / (GLfloat) h, -50, 50, -1.0, 1.0);
+        glOrtho(-2 * (GLfloat) w / (GLfloat) h, 2 * (GLfloat) w / (GLfloat) h, -2, 2, -1.0, 1.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
@@ -112,6 +100,19 @@ int main(int argc, char **argv) {
     glutInitWindowPosition(100, 100);
     glutCreateWindow("Tessellation");
     init();
+
+    glNewList(1, GL_COMPILE);
+    glBegin(GL_QUADS);
+    for (int i = 0; i < 6; ++i) {
+        glColor3f(C[i][0], C[i][1], C[i][2]);
+        for (int j = 0; j < 4; ++j) {
+            int vertexIndex = F[i][j];
+            glVertex3f(V[vertexIndex][0], V[vertexIndex][1], V[vertexIndex][2]);
+        }
+    }
+    glEnd();
+    glEndList();
+
     glutDisplayFunc(display);
     glutKeyboardFunc(keyboard);
     glutReshapeFunc(reshape);
