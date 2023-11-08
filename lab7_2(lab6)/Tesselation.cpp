@@ -7,6 +7,7 @@ bool mouseDown = false;
 float rotationX = 0.0;
 float rotationY = 0.0;
 
+// Definition of the vertices of the cube
 int V[8][3] = {
         {-1, -1, 1},
         {1,  -1, 1},
@@ -17,12 +18,16 @@ int V[8][3] = {
         {1,  1,  -1},
         {-1, 1,  -1}
 };
+
+// Definition of the faces of the cube
 int F[6][4] = {{2, 3, 0, 1},
                {2, 1, 5, 6},
                {6, 5, 4, 7},
                {7, 4, 0, 3},
                {3, 2, 6, 7},
                {0, 4, 5, 1}};
+
+// Definition of the colors of the faces of the cube
 float C[6][3] = {
         {1.0, 0.0, 0.0},
         {1.0, 1.0, 0.0},
