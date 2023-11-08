@@ -1,5 +1,4 @@
 #include <GL/glut.h>
-#include <cmath>
 
 int lastX = 0;
 int lastY = 0;
