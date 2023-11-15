@@ -2,7 +2,8 @@
 #include <GL/gl.h>
 #include <SOIL/SOIL.h>
 
-GLuint textures[6]; // Array to store texture IDs
+GLuint cubeTextures[6]; // Array to store texture IDs
+GLuint sphereTexture;
 GLfloat cubeVertices[][12] = {
         {-1.0f, -1.0f, 1.0f,  1.0f, -1.0f, 1.0f,  1.0f, 1.0f, 1.0f,  -1.0f, 1.0f, 1.0f},  // Front face
         {-1.0f, -1.0f, -1.0f,  1.0f, -1.0f, -1.0f,  1.0f, 1.0f, -1.0f,  -1.0f, 1.0f, -1.0f},  // Back face
@@ -18,8 +19,10 @@ int lastMouseX = 0;
 int lastMouseY = 0;
 bool isMousePressed = false;
 
-void loadTexture(const char *filename, int index) {
-    textures[index] = SOIL_load_OGL_texture(
+bool focusOnCube = true;
+
+void loadTexture(const char *filename, GLuint *textureID) {
+    *textureID = SOIL_load_OGL_texture(
             filename,
             SOIL_LOAD_AUTO,
             SOIL_CREATE_NEW_ID,
@@ -27,21 +30,35 @@ void loadTexture(const char *filename, int index) {
     );
 }
 
+void keyboard(unsigned char key, int x, int y) {
+    // Toggle between focusing on the cube and the sphere when the 'c' key is pressed
+    if (key == 'c' || key == 'C') {
+        focusOnCube = !focusOnCube;
+        glutPostRedisplay();
+    }
+}
+
 void init() {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glEnable(GL_DEPTH_TEST);
 
     // Load textures with repeating images
-    loadTexture("IvyTexture.bmp", 0);  // Front
-//    loadTexture("shreksy.bmp", 0);  // Front
-    loadTexture("IvyTexture.bmp", 1);  // Back
-    loadTexture("WoodGrain.bmp", 2);  // Top
-    loadTexture("WoodGrain.bmp", 3);  // Bottom
-    loadTexture("LightningTexture.bmp", 4);  // Right
-    loadTexture("RedLeavesTexture.bmp", 5);  // Left
+//    loadTexture("shreksy.bmp", &cubeTextures[0]);  // Front
+    loadTexture("IvyTexture.bmp", &cubeTextures[0]);  // Front
+    loadTexture("IvyTexture.bmp", &cubeTextures[1]);  // Back
+    loadTexture("WoodGrain.bmp", &cubeTextures[2]);  // Top
+    loadTexture("WoodGrain.bmp", &cubeTextures[3]);  // Bottom
+    loadTexture("LightningTexture.bmp", &cubeTextures[4]);  // Right
+    loadTexture("RedLeavesTexture.bmp", &cubeTextures[5]);  // Left
+
+    // Load sphere texture
+    loadTexture("earth.bmp", &sphereTexture);
 
     // Enable texturing
     glEnable(GL_TEXTURE_2D);
+
+    // Register keyboard callback function
+    glutKeyboardFunc(keyboard);
 }
 
 void drawTexturedCube() {
@@ -49,7 +66,7 @@ void drawTexturedCube() {
     GLuint faceTextures[] = {0, 1, 2, 3, 4, 5};
 
     for (int i = 0; i < 6; ++i) {
-        glBindTexture(GL_TEXTURE_2D, textures[faceTextures[i]]);
+        glBindTexture(GL_TEXTURE_2D, cubeTextures[faceTextures[i]]);
         glBegin(GL_QUADS);
         glTexCoord2f(0.0f, 0.0f); glVertex3f(cubeVertices[i][0], cubeVertices[i][1], cubeVertices[i][2]);
         glTexCoord2f(1.0f, 0.0f); glVertex3f(cubeVertices[i][3], cubeVertices[i][4], cubeVertices[i][5]);
@@ -59,6 +76,14 @@ void drawTexturedCube() {
     }
 }
 
+void drawTexturedSphere() {
+    glBindTexture(GL_TEXTURE_2D, sphereTexture);
+    GLUquadric *quadric = gluNewQuadric();
+    gluQuadricTexture(quadric, GL_TRUE);
+    gluQuadricNormals(quadric, GLU_SMOOTH);
+    gluSphere(quadric, 1.0, 50, 50);
+    gluDeleteQuadric(quadric);
+}
 
 void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -69,8 +94,15 @@ void display() {
     glRotatef(rotationX, 1.0, 0.0, 0.0);
     glRotatef(rotationY, 0.0, 1.0, 0.0);
 
-    // Draw the textured cube
-    drawTexturedCube();
+    if (focusOnCube) {
+        // Draw the textured cube
+        drawTexturedCube();
+    } else {
+        
+
+        // Draw the textured sphere
+        drawTexturedSphere();
+    }
 
     glutSwapBuffers();
 }
@@ -94,6 +126,8 @@ void mouse(int button, int state, int x, int y) {
         }
     }
 }
+
+
 
 void motion(int x, int y) {
     if (isMousePressed) {
