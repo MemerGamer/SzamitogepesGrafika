@@ -33,6 +33,7 @@ void init() {
 
     // Load textures with repeating images
     loadTexture("IvyTexture.bmp", 0);  // Front
+//    loadTexture("shreksy.bmp", 0);  // Front
     loadTexture("IvyTexture.bmp", 1);  // Back
     loadTexture("WoodGrain.bmp", 2);  // Top
     loadTexture("WoodGrain.bmp", 3);  // Bottom
