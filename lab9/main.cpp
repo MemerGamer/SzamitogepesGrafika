@@ -59,7 +59,7 @@ void init() {
     loadTexture("RedLeavesTexture.bmp", &cubeTextures[5]);  // Left
 
     // Load sphere texture
-    loadTexture("earth.bmp", &sphereTexture);
+    loadTexture("8k_moon.jpg", &sphereTexture);
 
     // Enable texturing
     glEnable(GL_TEXTURE_2D);
